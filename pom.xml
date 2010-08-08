@@ -23,7 +23,7 @@
         <modelVersion>4.0.0</modelVersion>
         <groupId>to.networld.concept</groupId>
         <artifactId>concepthandler</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1</version>
         <packaging>jar</packaging>
         <name>Networld Concept Handler</name>
         <description>Hypernyms and Hyponyms computator.</description>
