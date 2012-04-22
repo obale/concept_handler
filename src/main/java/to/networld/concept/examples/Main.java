@@ -18,15 +18,15 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		List<String> dbpediaURLs = DBPediaURLGenerator.getCategoryURLs("petrol");
+		List<String> dbpediaURLs = DBPediaURLGenerator.getCategoryURLs("computer");
 		for ( String entry : dbpediaURLs ) {
 			DBPedia dbpedia = new DBPedia(entry);
 			
 			System.out.println("Seeking for Super Concepts for " + entry);
-			outputList(dbpedia.getSuperConcepts(0));
+			outputList(dbpedia.getSuperConcepts(2));
 			
 			System.out.println("Seeking for Sub Concepts for " + entry);
-			outputList(dbpedia.getSubConcepts(0));
+			outputList(dbpedia.getSubConcepts(2));
 		}
 	}
 }

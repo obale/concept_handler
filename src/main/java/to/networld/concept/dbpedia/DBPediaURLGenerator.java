@@ -28,8 +28,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.lib.org.json.JSONArray;
 import com.hp.hpl.jena.sparql.lib.org.json.JSONException;
+import com.hp.hpl.jena.sparql.lib.org.json.JSONObject;
 
 /**
  * @author Alex Oberhauser
@@ -49,8 +49,10 @@ public class DBPediaURLGenerator {
 		dbpediaURL.append(prefix);
 		
 		StringBuffer wikiAPIprefix = new StringBuffer();
-		wikiAPIprefix.append("http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=");
+//		wikiAPIprefix.append("http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=");
+		wikiAPIprefix.append("http://en.wikipedia.org/w/api.php?action=query&format=json&titles=");
 		wikiAPIprefix.append(_conceptName.replaceAll(" ", "%20"));
+		System.out.println(wikiAPIprefix);
 		try {
 			URL url = new URL(wikiAPIprefix.toString());
 			URLConnection con = url.openConnection();
@@ -62,21 +64,28 @@ public class DBPediaURLGenerator {
 				response.append(inputLine);
 			in.close();
         
-			JSONArray jsonArray = new JSONArray(response.toString());
-			if ( jsonArray.length() > 1 ) {
-				JSONArray resultArray = jsonArray.getJSONArray(1);
-				String searchTerm;
-				List<String> dbpediaURLs = new ArrayList<String>();
-				for ( int count=0; count < resultArray.length(); count++ ) {
-					searchTerm = resultArray.getString(count);
-					dbpediaURL.delete(0, dbpediaURL.length());
-					dbpediaURL.append(prefix);
-					dbpediaURL.append(searchTerm.replaceAll(" ", "_"));
-					dbpediaURLs.add(dbpediaURL.toString());
-				}
-				return dbpediaURLs;
-			}
-			return null;
+//			JSONArray jsonArray = new JSONArray(response.toString());
+//			if ( jsonArray.length() > 1 ) {
+//				JSONArray resultArray = jsonArray.getJSONArray(1);
+//				String searchTerm;
+//				List<String> dbpediaURLs = new ArrayList<String>();
+//				for ( int count=0; count < resultArray.length(); count++ ) {
+//					searchTerm = resultArray.getString(count);
+//					dbpediaURL.delete(0, dbpediaURL.length());
+//					dbpediaURL.append(prefix);
+//					dbpediaURL.append(searchTerm.replaceAll(" ", "_"));
+//					dbpediaURLs.add(dbpediaURL.toString());
+//				}
+//				return dbpediaURLs;
+//			}
+//			return null;
+			List<String> dbpediaURLs = new ArrayList<String>();
+			JSONObject jsonObject = new JSONObject(response.toString());
+			JSONObject queryObj = jsonObject.getJSONObject("query");
+			JSONObject pagesObj = queryObj.getJSONObject("pages");
+			String title = pagesObj.getJSONObject((String)pagesObj.names().get(0)).getString("title");
+			dbpediaURLs.add(prefix + title);
+			return dbpediaURLs;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
